@@ -42,5 +42,15 @@ namespace Formify.Pages
 
             return RedirectToPage("/Dashboard"); // dashboard stworzymy póŸniej
         }
+        public IActionResult OnGet()
+        {
+            var email = HttpContext.Session.GetString("UserEmail");
+            if (!string.IsNullOrEmpty(email))
+            {
+                return RedirectToPage("/Dashboard");
+            }
+
+            return Page();
+        }
     }
 }
