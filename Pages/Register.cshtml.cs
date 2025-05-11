@@ -24,7 +24,12 @@ namespace Formify.Pages
 
         [BindProperty]
         [Required(ErrorMessage = "Has³o jest wymagane")]
+        [MinLength(6, ErrorMessage = "Has³o musi mieæ co najmniej 6 znaków")]
         public string Password { get; set; }
+
+        [BindProperty]
+        [Compare("Password", ErrorMessage = "Has³a musz¹ byæ takie same")]
+        public string ConfirmPassword { get; set; }
 
         [BindProperty]
         [Range(30, 300, ErrorMessage = "Wzrost musi byæ miêdzy 30 a 300 cm")]

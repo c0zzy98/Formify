@@ -16,8 +16,14 @@
     </div>
     <div>
         <label>Hasło</label>
-        <input type="password" asp-for="Password" required />
+        <input type="password" asp-for="Password" minlength="6" required />
     </div>
+    <div>
+        <label>Powtórz hasło</label>
+        <input type="password" asp-for="ConfirmPassword" minlength="6" required />
+        <span asp-validation-for="ConfirmPassword" style="color:red"></span>
+    </div>
+
     <div>
         <label>Wiek</label>
         <input type="number" asp-for="Age" min="10" max="120" required />
