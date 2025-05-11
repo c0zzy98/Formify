@@ -1,0 +1,48 @@
+﻿@page
+@model Formify.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Rejestracja";
+}
+
+<h2>Załóż konto w Formify</h2>
+<validation-summary model-only></validation-summary>
+<partial name="_ValidationScriptsPartial" />
+<validation-summary />
+
+<form method="post">
+    <div>
+        <label>Email</label>
+        <input type="email" asp-for="Email" required />
+    </div>
+    <div>
+        <label>Hasło</label>
+        <input type="password" asp-for="Password" required />
+    </div>
+    <div>
+        <label>Wiek</label>
+        <input type="number" asp-for="Age" min="10" max="120" required />
+    </div>
+    <div>
+        <label>Wzrost (cm)</label>
+        <input type="number" asp-for="Height" min="30" max="300" required />
+    </div>
+    <div>
+        <label>Waga (kg)</label>
+        <input type="number" asp-for="Weight" step="0.1" min="10" max="400" required />
+    </div>
+    <div>
+        <label>Cel</label>
+        <select asp-for="Goal" asp-items="Model.GoalOptions"></select>
+    </div>
+    <div>
+        <label>Poziom aktywności</label>
+        <select asp-for="ActivityLevel" asp-items="Model.ActivityOptions"></select>
+    </div>
+    <div>
+        <label>Tryb pracy</label>
+        <select asp-for="WorkStyle" asp-items="Model.WorkStyleOptions"></select>
+    </div>
+
+    <button type="submit">Zarejestruj</button>
+    <p style="color:red">@Model.ErrorMessage</p>
+</form>
