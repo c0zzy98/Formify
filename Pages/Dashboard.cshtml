@@ -1,0 +1,17 @@
+﻿@page
+@model Formify.Pages.DashboardModel
+@{
+    ViewData["Title"] = "Twój Dashboard";
+}
+
+<h2>Witaj, @Model.LoggedUser.Email!</h2>
+
+<p><strong>Wiek:</strong> @Model.LoggedUser.Age lat</p>
+<p><strong>Wzrost:</strong> @Model.LoggedUser.Height cm</p>
+<p><strong>Waga:</strong> @Model.LoggedUser.Weight kg</p>
+<p><strong>Cel:</strong> @Model.GoalDisplay</p>
+<p><strong>Aktywność:</strong> @Model.ActivityDisplay</p>
+<p><strong>Tryb pracy:</strong> @Model.WorkStyleDisplay</p>
+
+
+<p><a asp-page="/Logout">Wyloguj się</a></p>
