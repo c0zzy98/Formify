@@ -1,20 +1,26 @@
-using Formify.Data;
+﻿using Formify.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Dodanie Razor Pages
 builder.Services.AddRazorPages();
+
+// Dodanie sesji
+builder.Services.AddSession();
+
+// Dodanie EF Core i DB Context (twój kod)
 builder.Services.AddDbContext<FormifyDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Użycie sesji
+app.UseSession();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -26,5 +32,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+// 🔽 TO DODAJ NA KOŃCU:
+app.MapFallbackToPage("/Login");
 
 app.Run();

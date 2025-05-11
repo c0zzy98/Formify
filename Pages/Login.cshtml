@@ -1,0 +1,20 @@
+﻿@page
+@model Formify.Pages.LoginModel
+@{
+    ViewData["Title"] = "Logowanie";
+}
+
+<h2>Zaloguj się do Formify</h2>
+
+<form method="post">
+    <div>
+        <label>Email</label>
+        <input type="email" asp-for="Email" required />
+    </div>
+    <div>
+        <label>Hasło</label>
+        <input type="password" asp-for="Password" required />
+    </div>
+    <button type="submit">Zaloguj</button>
+    <p style="color:red">@Model.ErrorMessage</p>
+</form>
