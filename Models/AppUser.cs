@@ -1,4 +1,6 @@
-﻿namespace Formify.Models
+﻿using Formify.Models;
+
+namespace Formify.Models
 {
     public class AppUser
     {
@@ -14,6 +16,8 @@
         public Goal Goal { get; set; }
         public ActivityLevel ActivityLevel { get; set; }
         public WorkStyle WorkStyle { get; set; }
+        public List<Meal> Meals { get; set; }
+
     }
 }
 
@@ -39,3 +43,4 @@ public enum WorkStyle
     Mobile,
     Physical
 }
+

@@ -1,0 +1,45 @@
+﻿@page
+@model Formify.Pages.AddMealModel
+@{
+    ViewData["Title"] = "Dodaj posiłek";
+}
+
+<h2>Dodaj posiłek</h2>
+
+<form method="post">
+    <div>
+        <label>Nazwa</label>
+        <input asp-for="Name" required />
+    </div>
+    <div>
+        <label>Kalorie</label>
+        <input asp-for="Calories" type="number" step="1" required />
+    </div>
+    <div>
+        <label>Białko (g)</label>
+        <input asp-for="Protein" type="number" step="0.1" required />
+    </div>
+    <div>
+        <label>Węglowodany (g)</label>
+        <input asp-for="Carbs" type="number" step="0.1" required />
+    </div>
+    <div>
+        <label>Tłuszcze (g)</label>
+        <input asp-for="Fat" type="number" step="0.1" required />
+    </div>
+    <div>
+        <label>Pora dnia</label>
+        <select asp-for="MealTime" required>
+            <option value="Śniadanie">Śniadanie</option>
+            <option value="II śniadanie">II śniadanie</option>
+            <option value="Obiad">Obiad</option>
+            <option value="Podwieczorek">Podwieczorek</option>
+            <option value="Kolacja">Kolacja</option>
+            <option value="Przekąska">Przekąska</option>
+        </select>
+    </div>
+
+    <button type="submit">Dodaj</button>
+</form>
+
+<partial name="_ValidationScriptsPartial" />
