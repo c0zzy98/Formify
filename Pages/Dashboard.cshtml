@@ -1,10 +1,16 @@
 ﻿@page
 @model Formify.Pages.DashboardModel
 @{
-    ViewData["Title"] = "Twój Dashboard";
+    ViewData["Title"] = "Dashboard";
 }
 
 <h2>Witaj, @Model.LoggedUser.Email!</h2>
+
+<p>
+    <strong>Cel:</strong> @Model.GoalDisplay <br />
+    <strong>Aktywność:</strong> @Model.ActivityDisplay <br />
+    <strong>Tryb pracy:</strong> @Model.WorkStyleDisplay
+</p>
 
 <form method="get">
     <label>Wybierz datę:</label>
@@ -12,7 +18,27 @@
     <button type="submit">Pokaż</button>
 </form>
 
-<h3>Posiłki z dnia: @Model.SelectedDate.ToString("yyyy-MM-dd")</h3>
+<hr />
+
+<h3>Twoje zapotrzebowanie dzienne:</h3>
+<ul>
+    <li><strong>Kcal:</strong> @Model.DailyCaloriesTarget.ToString("0")</li>
+    <li><strong>Białko:</strong> @Model.DailyProteinTarget.ToString("0") g</li>
+    <li><strong>Węglowodany:</strong> @Model.DailyCarbsTarget.ToString("0") g</li>
+    <li><strong>Tłuszcze:</strong> @Model.DailyFatTarget.ToString("0") g</li>
+</ul>
+
+<h3>Spożycie @Model.SelectedDate.ToString("yyyy-MM-dd"):</h3>
+<ul>
+    <li><strong>Kcal:</strong> @Model.CaloriesEaten.ToString("0") (@Model.CaloriesProgress%)</li>
+    <li><strong>Białko:</strong> @Model.ProteinEaten.ToString("0") g (@Model.ProteinProgress%)</li>
+    <li><strong>Węglowodany:</strong> @Model.CarbsEaten.ToString("0") g (@Model.CarbsProgress%)</li>
+    <li><strong>Tłuszcze:</strong> @Model.FatEaten.ToString("0") g (@Model.FatProgress%)</li>
+</ul>
+
+<hr />
+
+<h3>Posiłki z tego dnia:</h3>
 
 @if (Model.Meals.Any())
 {
@@ -34,5 +60,5 @@ else
     <p>Brak posiłków w wybranym dniu.</p>
 }
 
-<p><a asp-page="/AddMeal">Dodaj nowy posiłek</a></p>
-<p><a asp-page="/Logout">Wyloguj się</a></p>
+<p><a asp-page="/AddMeal">➕ Dodaj nowy posiłek</a></p>
+<p><a asp-page="/Logout">🔓 Wyloguj się</a></p>
