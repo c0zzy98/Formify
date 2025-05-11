@@ -6,13 +6,33 @@
 
 <h2>Witaj, @Model.LoggedUser.Email!</h2>
 
-<p><strong>Wiek:</strong> @Model.LoggedUser.Age lat</p>
-<p><strong>Wzrost:</strong> @Model.LoggedUser.Height cm</p>
-<p><strong>Waga:</strong> @Model.LoggedUser.Weight kg</p>
-<p><strong>Cel:</strong> @Model.GoalDisplay</p>
-<p><strong>Aktywność:</strong> @Model.ActivityDisplay</p>
-<p><strong>Tryb pracy:</strong> @Model.WorkStyleDisplay</p>
+<form method="get">
+    <label>Wybierz datę:</label>
+    <input type="date" asp-for="SelectedDate" />
+    <button type="submit">Pokaż</button>
+</form>
 
+<h3>Posiłki z dnia: @Model.SelectedDate.ToString("yyyy-MM-dd")</h3>
 
-<p><a asp-page="/Logout">Wyloguj się</a></p>
+@if (Model.Meals.Any())
+{
+    <ul>
+        @foreach (var meal in Model.Meals)
+        {
+            <li>
+                <strong>@meal.MealTime:</strong> @meal.Name –
+                @meal.Calories kcal,
+                B: @meal.Protein g,
+                W: @meal.Carbs g,
+                T: @meal.Fat g
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Brak posiłków w wybranym dniu.</p>
+}
+
 <p><a asp-page="/AddMeal">Dodaj nowy posiłek</a></p>
+<p><a asp-page="/Logout">Wyloguj się</a></p>

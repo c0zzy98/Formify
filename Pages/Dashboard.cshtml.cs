@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Formify.Data;
 using Formify.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Formify.Pages
 {
@@ -17,18 +17,26 @@ namespace Formify.Pages
 
         public AppUser LoggedUser { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public DateTime SelectedDate { get; set; } = DateTime.UtcNow.Date;
+
+        public List<Meal> Meals { get; set; } = new();
+
+        public string GoalDisplay { get; set; }
+        public string ActivityDisplay { get; set; }
+        public string WorkStyleDisplay { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
+            if (SelectedDate.Kind == DateTimeKind.Unspecified)
+                SelectedDate = DateTime.SpecifyKind(SelectedDate, DateTimeKind.Utc);
             var email = HttpContext.Session.GetString("UserEmail");
 
             if (string.IsNullOrEmpty(email))
                 return RedirectToPage("/Login");
 
-            LoggedUser = await _db.AppUsers.FirstOrDefaultAsync(u => u.Email == email);
-
-            GoalDisplay = GetGoalText(LoggedUser.Goal);
-            ActivityDisplay = GetActivityText(LoggedUser.ActivityLevel);
-            WorkStyleDisplay = GetWorkStyleText(LoggedUser.WorkStyle);
+            LoggedUser = await _db.AppUsers
+                .FirstOrDefaultAsync(u => u.Email == email);
 
             if (LoggedUser == null)
             {
@@ -36,8 +44,20 @@ namespace Formify.Pages
                 return RedirectToPage("/Login");
             }
 
+            // Poka¿ dane formatowane
+            GoalDisplay = GetGoalText(LoggedUser.Goal);
+            ActivityDisplay = GetActivityText(LoggedUser.ActivityLevel);
+            WorkStyleDisplay = GetWorkStyleText(LoggedUser.WorkStyle);
+
+            // Pobierz posi³ki danego u¿ytkownika z wybranej daty
+            Meals = await _db.Meals
+                .Where(m => m.AppUserId == LoggedUser.Id && m.Date.Date == SelectedDate.Date)
+                .OrderBy(m => m.MealTime)
+                .ToListAsync();
+
             return Page();
         }
+
         public string GetGoalText(Goal goal) => goal switch
         {
             Goal.LoseWeight => "Schudn¹æ",
@@ -63,9 +83,5 @@ namespace Formify.Pages
             WorkStyle.Physical => "Fizyczny (np. magazyn, budowa)",
             _ => style.ToString()
         };
-        public string GoalDisplay { get; set; }
-        public string ActivityDisplay { get; set; }
-        public string WorkStyleDisplay { get; set; }
-
     }
 }
