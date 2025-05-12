@@ -54,6 +54,7 @@
 
                  <form method="post" asp-page-handler="Delete" asp-route-id="@meal.Id" style="display:inline;">
             <button type="submit" onclick="return confirm('Na pewno usunąć ten posiłek?')">🗑️ Usuń</button>
+                    <a asp-page="/EditMeal" asp-route-id="@meal.Id">✏️ Edytuj</a>
             </form>
             </li>
         }

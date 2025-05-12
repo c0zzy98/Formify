@@ -3,19 +3,27 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Dodanie Razor Pages
+// Razor Pages
 builder.Services.AddRazorPages();
 
-// Dodanie sesji
-builder.Services.AddSession();
+// 🔧 Dodaj HttpContextAccessor (wymagane do sesji)
+builder.Services.AddHttpContextAccessor();
 
-// Dodanie EF Core i DB Context (twój kod)
+// 🔐 Dodaj sesję
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// Baza danych
 builder.Services.AddDbContext<FormifyDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-// Użycie sesji
+// Sesja musi być przed routingiem
 app.UseSession();
 
 if (!app.Environment.IsDevelopment())
@@ -33,7 +41,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-// 🔽 TO DODAJ NA KOŃCU:
+// fallback opcjonalny — ale OK
 app.MapFallbackToPage("/Login");
 
 app.Run();

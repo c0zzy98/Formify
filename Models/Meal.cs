@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Formify.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Formify.Models
 {
@@ -24,15 +24,14 @@ namespace Formify.Models
         [Range(0, 500)]
         public float Fat { get; set; }
 
-        [Required]
-        public string MealTime { get; set; } // np. Śniadanie, Obiad
+        public string? MealTime { get; set; } // np. Śniadanie, Obiad
 
         public DateTime Date { get; set; }
 
-        // Powiązanie z użytkownikiem
         public int AppUserId { get; set; }
 
         [ForeignKey("AppUserId")]
-        public AppUser AppUser { get; set; }
+        [BindNever] // ⬅️ Dodane, aby nie bindować AppUser z formularza
+        public AppUser? AppUser { get; set; }
     }
 }

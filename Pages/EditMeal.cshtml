@@ -1,0 +1,38 @@
+﻿@page "{id:int}"
+@model Formify.Pages.EditMealModel
+@{
+    ViewData["Title"] = "Edytuj posiłek";
+}
+
+<h2>Edytuj posiłek</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Meal.Id" />
+    <input type="hidden" asp-for="Meal.MealTime" />
+    <input type="hidden" asp-for="Meal.Date" />
+
+    <div>
+        <label>Nazwa:</label>
+        <input asp-for="Meal.Name" class="form-control" />
+    </div>
+    <div>
+        <label>Kalorie:</label>
+        <input asp-for="Meal.Calories" class="form-control" type="number" step="0.1" />
+    </div>
+    <div>
+        <label>Białko (g):</label>
+        <input asp-for="Meal.Protein" class="form-control" type="number" step="0.1" />
+    </div>
+    <div>
+        <label>Węglowodany (g):</label>
+        <input asp-for="Meal.Carbs" class="form-control" type="number" step="0.1" />
+    </div>
+    <div>
+        <label>Tłuszcze (g):</label>
+        <input asp-for="Meal.Fat" class="form-control" type="number" step="0.1" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a asp-page="/Dashboard" asp-route-SelectedDate="@Model.Meal.Date.ToString("yyyy-MM-dd")" class="btn btn-secondary">Anuluj</a>
+</form>
