@@ -36,6 +36,9 @@ namespace Formify.Pages
         public int ProteinProgress => GetProgress(ProteinEaten, DailyProteinTarget);
         public int FatProgress => GetProgress(FatEaten, DailyFatTarget);
         public int CarbsProgress => GetProgress(CarbsEaten, DailyCarbsTarget);
+        public int WaterDrunkToday { get; set; }
+        public int WaterTarget => 3000; // domyœlnie 3 litry
+        public int WaterProgress => (int)Math.Min(100, Math.Round((double)WaterDrunkToday / WaterTarget * 100));
 
         public string GoalDisplay { get; set; }
         public string ActivityDisplay { get; set; }
@@ -56,6 +59,9 @@ namespace Formify.Pages
                 HttpContext.Session.Clear();
                 return RedirectToPage("/Login");
             }
+            WaterDrunkToday = await _db.WaterIntakes
+                .Where(w => w.AppUserId == LoggedUser.Id && w.Date.Date == SelectedDate.Date)
+                .SumAsync(w => w.AmountMl);
 
             GoalDisplay = GetGoalText(LoggedUser.Goal);
             ActivityDisplay = GetActivityText(LoggedUser.ActivityLevel);
@@ -157,6 +163,24 @@ namespace Formify.Pages
             }
 
             return RedirectToPage(new { SelectedDate = SelectedDate.ToString("yyyy-MM-dd") });
+        }
+        public async Task<IActionResult> OnPostAddWaterAsync(int amount)
+        {
+            var email = HttpContext.Session.GetString("UserEmail");
+            var user = await _db.AppUsers.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return RedirectToPage("/Login");
+
+            var water = new WaterIntake
+            {
+                AppUserId = user.Id,
+                AmountMl = amount,
+                Date = DateTime.UtcNow
+            };
+
+            _db.WaterIntakes.Add(water);
+            await _db.SaveChangesAsync();
+
+            return RedirectToPage(new { SelectedDate = DateTime.UtcNow.ToString("yyyy-MM-dd") });
         }
 
     }

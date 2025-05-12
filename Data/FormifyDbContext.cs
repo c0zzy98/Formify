@@ -11,6 +11,8 @@ namespace Formify.Data
         // Na start testowa tabela Użytkowników
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Meal> Meals { get; set; }
+        public DbSet<WaterIntake> WaterIntakes { get; set; }
+
 
     }
 

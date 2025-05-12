@@ -3,6 +3,7 @@ using System;
 using Formify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Formify.Migrations
 {
     [DbContext(typeof(FormifyDbContext))]
-    partial class FormifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512114346_AddWaterIntake")]
+    partial class AddWaterIntake
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,45 +104,10 @@ namespace Formify.Migrations
                     b.ToTable("Meals");
                 });
 
-            modelBuilder.Entity("Formify.Models.WaterIntake", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AmountMl")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("WaterIntakes");
-                });
-
             modelBuilder.Entity("Formify.Models.Meal", b =>
                 {
                     b.HasOne("Formify.Models.AppUser", "AppUser")
                         .WithMany("Meals")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("Formify.Models.WaterIntake", b =>
-                {
-                    b.HasOne("Formify.Models.AppUser", "AppUser")
-                        .WithMany()
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
