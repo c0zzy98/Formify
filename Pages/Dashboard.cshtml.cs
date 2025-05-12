@@ -141,5 +141,23 @@ namespace Formify.Pages
             WorkStyle.Physical => "Fizyczny (np. magazyn, budowa)",
             _ => style.ToString()
         };
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            var email = HttpContext.Session.GetString("UserEmail");
+            if (string.IsNullOrEmpty(email)) return RedirectToPage("/Login");
+
+            var user = await _db.AppUsers.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return RedirectToPage("/Login");
+
+            var meal = await _db.Meals.FirstOrDefaultAsync(m => m.Id == id && m.AppUserId == user.Id);
+            if (meal != null)
+            {
+                _db.Meals.Remove(meal);
+                await _db.SaveChangesAsync();
+            }
+
+            return RedirectToPage(new { SelectedDate = SelectedDate.ToString("yyyy-MM-dd") });
+        }
+
     }
 }
