@@ -189,7 +189,7 @@ namespace Formify.Pages
             {
                 AppUserId = user.Id,
                 AmountMl = amount,
-                Date = SelectedDate
+                Date = DateTime.SpecifyKind(SelectedDate, DateTimeKind.Utc)
             };
 
             _db.WaterIntakes.Add(water);
@@ -206,8 +206,10 @@ namespace Formify.Pages
             var user = await _db.AppUsers.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null) return RedirectToPage("/Login");
 
+            var safeDate = DateTime.SpecifyKind(SelectedDate.Date, DateTimeKind.Utc);
+
             var lastEntry = await _db.WaterIntakes
-                .Where(w => w.AppUserId == user.Id && w.Date.Date == SelectedDate.Date)
+                .Where(w => w.AppUserId == user.Id && w.Date.Date == safeDate)
                 .OrderByDescending(w => w.CreatedAt)
                 .FirstOrDefaultAsync();
 
