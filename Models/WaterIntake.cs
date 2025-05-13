@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Formify.Models;
 
 namespace Formify.Models
 {
@@ -8,14 +9,14 @@ namespace Formify.Models
     {
         public int Id { get; set; }
 
-        [Range(0, 5000)]
-        public int AmountMl { get; set; } // ilość w mililitrach
-
-        public DateTime Date { get; set; }
-
-        public int AppUserId { get; set; }
-
         [ForeignKey("AppUserId")]
+        public int AppUserId { get; set; }
         public AppUser AppUser { get; set; }
+
+        [Range(0, 5000)]
+        public int AmountMl { get; set; }
+
+        public DateTime Date { get; set; } = DateTime.UtcNow.Date;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // nowa kolumna
     }
 }

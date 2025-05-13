@@ -182,6 +182,27 @@ namespace Formify.Pages
 
             return RedirectToPage(new { SelectedDate = DateTime.UtcNow.ToString("yyyy-MM-dd") });
         }
+        public async Task<IActionResult> OnPostUndoWaterAsync()
+        {
+            var email = HttpContext.Session.GetString("UserEmail");
+            if (string.IsNullOrEmpty(email)) return RedirectToPage("/Login");
+
+            var user = await _db.AppUsers.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return RedirectToPage("/Login");
+
+            var lastEntry = await _db.WaterIntakes
+                .Where(w => w.AppUserId == user.Id && w.Date.Date == DateTime.UtcNow.Date)
+                .OrderByDescending(w => w.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            if (lastEntry != null)
+            {
+                _db.WaterIntakes.Remove(lastEntry);
+                await _db.SaveChangesAsync();
+            }
+
+            return RedirectToPage();
+        }
 
     }
 }

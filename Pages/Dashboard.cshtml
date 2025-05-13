@@ -77,4 +77,7 @@ else
 <form method="post" asp-page-handler="AddWater">
     <input type="number" name="amount" value="250" step="50" class="form-control d-inline w-auto" />
     <button type="submit" class="btn btn-primary">Dodaj wodę</button>
+</form> 
+<form method="post" asp-page-handler="UndoWater">
+    <button type="submit" class="btn btn-warning">Cofnij ostatni wpis</button>
 </form>
