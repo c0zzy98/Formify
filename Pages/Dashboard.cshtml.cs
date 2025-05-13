@@ -21,6 +21,7 @@ namespace Formify.Pages
         public DateTime SelectedDate { get; set; } = DateTime.UtcNow.Date;
 
         public List<Meal> Meals { get; set; } = new();
+        public List<WeightEntry> TodaysWeights { get; set; } = new();
 
         public float DailyCaloriesTarget { get; set; }
         public float DailyProteinTarget { get; set; }
@@ -37,12 +38,17 @@ namespace Formify.Pages
         public int FatProgress => GetProgress(FatEaten, DailyFatTarget);
         public int CarbsProgress => GetProgress(CarbsEaten, DailyCarbsTarget);
         public int WaterDrunkToday { get; set; }
-        public int WaterTarget => 3000; // domyœlnie 3 litry
+        public int WaterTarget => 3000;
         public int WaterProgress => (int)Math.Min(100, Math.Round((double)WaterDrunkToday / WaterTarget * 100));
 
         public string GoalDisplay { get; set; }
         public string ActivityDisplay { get; set; }
         public string WorkStyleDisplay { get; set; }
+
+        [BindProperty]
+        public float WeightInput { get; set; }
+
+        public float? TodaysWeightValue { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -59,6 +65,7 @@ namespace Formify.Pages
                 HttpContext.Session.Clear();
                 return RedirectToPage("/Login");
             }
+
             WaterDrunkToday = await _db.WaterIntakes
                 .Where(w => w.AppUserId == LoggedUser.Id && w.Date.Date == SelectedDate.Date)
                 .SumAsync(w => w.AmountMl);
@@ -77,6 +84,12 @@ namespace Formify.Pages
             ProteinEaten = Meals.Sum(m => m.Protein);
             FatEaten = Meals.Sum(m => m.Fat);
             CarbsEaten = Meals.Sum(m => m.Carbs);
+
+            TodaysWeightValue = await _db.WeightEntries
+                .Where(w => w.AppUserId == LoggedUser.Id && w.EntryTime.Date == SelectedDate.Date)
+                .OrderByDescending(w => w.EntryTime)
+                .Select(w => (float?)w.Weight)
+                .FirstOrDefaultAsync();
 
             return Page();
         }
@@ -147,6 +160,7 @@ namespace Formify.Pages
             WorkStyle.Physical => "Fizyczny (np. magazyn, budowa)",
             _ => style.ToString()
         };
+
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             var email = HttpContext.Session.GetString("UserEmail");
@@ -164,6 +178,7 @@ namespace Formify.Pages
 
             return RedirectToPage(new { SelectedDate = SelectedDate.ToString("yyyy-MM-dd") });
         }
+
         public async Task<IActionResult> OnPostAddWaterAsync(int amount)
         {
             var email = HttpContext.Session.GetString("UserEmail");
@@ -174,14 +189,15 @@ namespace Formify.Pages
             {
                 AppUserId = user.Id,
                 AmountMl = amount,
-                Date = DateTime.UtcNow
+                Date = SelectedDate
             };
 
             _db.WaterIntakes.Add(water);
             await _db.SaveChangesAsync();
 
-            return RedirectToPage(new { SelectedDate = DateTime.UtcNow.ToString("yyyy-MM-dd") });
+            return RedirectToPage(new { SelectedDate = SelectedDate.ToString("yyyy-MM-dd") });
         }
+
         public async Task<IActionResult> OnPostUndoWaterAsync()
         {
             var email = HttpContext.Session.GetString("UserEmail");
@@ -191,7 +207,7 @@ namespace Formify.Pages
             if (user == null) return RedirectToPage("/Login");
 
             var lastEntry = await _db.WaterIntakes
-                .Where(w => w.AppUserId == user.Id && w.Date.Date == DateTime.UtcNow.Date)
+                .Where(w => w.AppUserId == user.Id && w.Date.Date == SelectedDate.Date)
                 .OrderByDescending(w => w.CreatedAt)
                 .FirstOrDefaultAsync();
 
@@ -201,8 +217,44 @@ namespace Formify.Pages
                 await _db.SaveChangesAsync();
             }
 
-            return RedirectToPage();
+            return RedirectToPage(new { SelectedDate = SelectedDate.ToString("yyyy-MM-dd") });
         }
 
+        public async Task<IActionResult> OnPostSaveWeightAsync()
+        {
+            var email = HttpContext.Session.GetString("UserEmail");
+            if (string.IsNullOrEmpty(email)) return RedirectToPage("/Login");
+
+            var user = await _db.AppUsers.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return RedirectToPage("/Login");
+
+            SelectedDate = DateTime.SpecifyKind(SelectedDate, DateTimeKind.Utc);
+            var targetDate = SelectedDate.Date;
+
+            var existing = await _db.WeightEntries
+                .FirstOrDefaultAsync(w => w.AppUserId == user.Id && w.EntryTime.Date == targetDate);
+
+            if (existing != null)
+            {
+                existing.Weight = WeightInput;
+                existing.EntryTime = targetDate;
+                existing.Timestamp = DateTime.UtcNow;
+            }
+            else
+            {
+                _db.WeightEntries.Add(new WeightEntry
+                {
+                    AppUserId = user.Id,
+                    Weight = WeightInput,
+                    EntryTime = targetDate,
+                    Timestamp = DateTime.UtcNow
+                });
+            }
+
+            await _db.SaveChangesAsync();
+            return RedirectToPage("/Dashboard", new { SelectedDate = targetDate.ToString("yyyy-MM-dd") });
+        }
     }
 }
+
+    

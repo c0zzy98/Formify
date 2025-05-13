@@ -1,0 +1,19 @@
+﻿@page
+@model Formify.Pages.AddWeightModel
+@{
+    ViewData["Title"] = "Dodaj wagę";
+}
+
+<h2>Dodaj wagę</h2>
+<input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+
+<form method="post">
+    <input type="hidden" asp-for="SelectedDate" />
+    <div>
+        <label for="Weight">Waga (kg):</label>
+        <input asp-for="NewWeight.Weight" type="number" step="0.1" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a asp-page="/Dashboard" class="btn btn-secondary">Anuluj</a>
+</form>

@@ -81,3 +81,31 @@ else
 <form method="post" asp-page-handler="UndoWater">
     <button type="submit" class="btn btn-warning">Cofnij ostatni wpis</button>
 </form>
+
+<h3>Twoja waga dziś:</h3>
+
+<p>
+    Obecna wartość:
+    @if (Model.TodaysWeightValue.HasValue)
+    {
+        <strong>@Model.TodaysWeightValue.Value.ToString("0.0") kg</strong>
+    }
+    else
+    {
+        <em>Brak danych</em>
+    }
+</p>
+
+<form method="post" asp-page-handler="SaveWeight">
+    <input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+
+    <div class="form-group">
+        <label for="WeightInput">Wprowadź nową wartość (kg):</label>
+        <input asp-for="WeightInput" type="number" step="0.1" class="form-control" id="WeightInput" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Zapisz wagę</button>
+</form>
+
+
+

@@ -5,8 +5,11 @@
 }
 
 <h2>Dodaj posiłek</h2>
+<input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
 
 <form method="post">
+    <input type="hidden" asp-for="SelectedDate" />
+
     <div>
         <label>Nazwa</label>
         <input asp-for="Name" required />

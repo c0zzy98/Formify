@@ -12,6 +12,7 @@ namespace Formify.Data
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Meal> Meals { get; set; }
         public DbSet<WaterIntake> WaterIntakes { get; set; }
+        public DbSet<WeightEntry> WeightEntries { get; set; }
 
 
     }

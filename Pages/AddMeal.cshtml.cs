@@ -41,6 +41,10 @@ namespace Formify.Pages
 
         public string ErrorMessage { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public DateTime SelectedDate { get; set; } = DateTime.UtcNow.Date;
+
+
         public async Task<IActionResult> OnPostAsync()
         {
             var email = HttpContext.Session.GetString("UserEmail");
@@ -65,14 +69,14 @@ namespace Formify.Pages
                 Carbs = Carbs,
                 Fat = Fat,
                 MealTime = MealTime,
-                Date = DateTime.UtcNow,
+                Date = DateTime.SpecifyKind(SelectedDate.Date, DateTimeKind.Utc),
                 AppUserId = user.Id
             };
 
             _db.Meals.Add(meal);
             await _db.SaveChangesAsync();
 
-            return RedirectToPage("/Dashboard");
+            return RedirectToPage("/Dashboard", new { SelectedDate = SelectedDate.ToString("yyyy-MM-dd") });
         }
     }
 }
