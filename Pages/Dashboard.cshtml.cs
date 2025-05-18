@@ -96,7 +96,17 @@ namespace Formify.Pages
 
         private void CalculateUserNeeds(AppUser user)
         {
-            float bmr = 10f * user.Weight + 6.25f * user.Height - 5f * user.Age + 5f;
+            float bmr;
+
+            if (user.Gender?.ToLower() == "kobieta")
+            {
+                bmr = 10f * user.Weight + 6.25f * user.Height - 5f * user.Age - 161f;
+            }
+            else
+            {
+                // Domyœlnie: mê¿czyzna lub inna p³eæ – stosujemy wzór mêski
+                bmr = 10f * user.Weight + 6.25f * user.Height - 5f * user.Age + 5f;
+            }
 
             float activityMultiplier = user.ActivityLevel switch
             {

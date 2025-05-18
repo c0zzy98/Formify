@@ -10,7 +10,22 @@
 <validation-summary />
 
 <form method="post">
+	<div>
+		<label>Imię</label>
+		<input type="text" asp-for="FirstName" required />
     <div>
+			<label>Nazwisko</label>
+			<input type="text" asp-for="LastName" required />
+		</div>
+	</div>
+	<div>
+		<label>Płeć</label>
+        <select asp-for="Gender" required>
+            <option value="">-- wybierz --</option>
+            <option value="Mężczyzna">Mężczyzna</option>
+            <option value="Kobieta">Kobieta</option>
+        </select>
+        <br />
         <label>Email</label>
         <input type="email" asp-for="Email" required />
     </div>

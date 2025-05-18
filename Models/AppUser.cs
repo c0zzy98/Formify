@@ -9,6 +9,9 @@ namespace Formify.Models
         public string PasswordHash { get; set; }
 
         // Nowe dane
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Gender { get; set; }
         public int Age { get; set; }
         public int Height { get; set; } // cm
         public float Weight { get; set; } // kg

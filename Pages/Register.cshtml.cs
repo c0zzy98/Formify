@@ -16,6 +16,17 @@ namespace Formify.Pages
         {
             _db = db;
         }
+        [Required]
+        [BindProperty]
+        public string FirstName { get; set; }
+
+        [Required]
+        [BindProperty]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "P³eæ jest wymagana")] 
+        [BindProperty]
+        public string Gender { get; set; }
 
         [BindProperty]
         [Required(ErrorMessage = "Email jest wymagany")]
@@ -77,6 +88,9 @@ namespace Formify.Pages
 
             var user = new AppUser
             {
+                FirstName = FirstName,
+                LastName = LastName,
+                Gender = Gender,
                 Email = Email,
                 PasswordHash = hashedPassword,
                 Age = Age,
@@ -118,19 +132,19 @@ namespace Formify.Pages
 
         private string GetActivityText(ActivityLevel level) => level switch
         {
-            ActivityLevel.VeryLow => "Bardzo niska (np. praca siedz¹ca, brak ruchu)",
-            ActivityLevel.Low => "Niska (krótkie spacery, lekkie obowi¹zki domowe)",
-            ActivityLevel.Medium => "Œrednia (chodzenie, stanie, czêsty ruch)",
-            ActivityLevel.High => "Wysoka (fizyczna praca, du¿o chodzenia)",
-            ActivityLevel.VeryHigh => "Bardzo wysoka (ciê¿ka praca fizyczna, sportowiec)",
+            ActivityLevel.VeryLow => "Bardzo niska – brak treningów, ma³o ruchu w ci¹gu dnia)",
+            ActivityLevel.Low => "Niska – lekkie spacery lub 1-2 treningi tygodniowo",
+            ActivityLevel.Medium => "Œrednia – 3-4 treningi w tygodniu lub aktywny tryb ¿ycia",
+            ActivityLevel.High => "Wysoka – 5-6 intensywnych treningów, du¿o ruchu",
+            ActivityLevel.VeryHigh => "Bardzo wysoka – codzienne treningi lub praca fizyczna + trening",
             _ => level.ToString()
         };
 
         private string GetWorkStyleText(WorkStyle style) => style switch
         {
-            WorkStyle.Sedentary => "Siedz¹cy (np. biurowy)",
-            WorkStyle.Mobile => "Ruchomy (np. kelner, kurier)",
-            WorkStyle.Physical => "Fizyczny (np. magazyn, budowa)",
+            WorkStyle.Sedentary => "Siedz¹cy – praca przy komputerze, biuro, kierowca",
+            WorkStyle.Mobile => "Ruchomy – kelner, kurier, nauczyciel, fryzjer (g³ównie chodzenie/stanie)",
+            WorkStyle.Physical => "Fizyczny – magazynier, budowlaniec, mechanik (dŸwiganie, intensywna praca)",
             _ => style.ToString()
         };
     }
