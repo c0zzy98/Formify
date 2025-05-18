@@ -1,0 +1,25 @@
+﻿@page
+@model Formify.Pages.Account.OpenAiModel
+@{
+    ViewData["Title"] = "OpenAI API Key";
+}
+
+<h2>Ustawienia klucza OpenAI API</h2>
+
+@if (!string.IsNullOrEmpty(Model.CurrentApiKeyMasked))
+{
+    <p>Obecny zapisany klucz: <code>@Model.CurrentApiKeyMasked</code></p>
+}
+else
+{
+    <p>Brak zapisanego klucza.</p>
+}
+
+<form method="post" class="mt-4">
+    <div class="mb-3">
+        <label for="apiKey" class="form-label">Nowy klucz API</label>
+        <input type="text" class="form-control" id="apiKey" asp-for="ApiKeyInput" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+</form>

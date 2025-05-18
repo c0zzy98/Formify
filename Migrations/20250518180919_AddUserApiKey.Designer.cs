@@ -3,6 +3,7 @@ using System;
 using Formify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Formify.Migrations
 {
     [DbContext(typeof(FormifyDbContext))]
-    partial class FormifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250518180919_AddUserApiKey")]
+    partial class AddUserApiKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,32 +120,6 @@ namespace Formify.Migrations
                     b.ToTable("Meals");
                 });
 
-            modelBuilder.Entity("Formify.Models.UserApiKey", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApiKey")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("KeyName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("UserApiKeys");
-                });
-
             modelBuilder.Entity("Formify.Models.UserContextChange", b =>
                 {
                     b.Property<int>("Id")
@@ -231,17 +208,6 @@ namespace Formify.Migrations
                 {
                     b.HasOne("Formify.Models.AppUser", "AppUser")
                         .WithMany("Meals")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("Formify.Models.UserApiKey", b =>
-                {
-                    b.HasOne("Formify.Models.AppUser", "AppUser")
-                        .WithMany()
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

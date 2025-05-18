@@ -14,6 +14,8 @@ namespace Formify.Data
         public DbSet<WaterIntake> WaterIntakes { get; set; }
         public DbSet<WeightEntry> WeightEntries { get; set; }
         public DbSet<UserContextChange> UserContextChanges { get; set; }
+        public DbSet<UserApiKey> UserApiKeys { get; set; }
+
 
     }
 
