@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Formify.Data;
@@ -66,6 +66,19 @@ namespace Formify.Pages
                 return RedirectToPage("/Login");
             }
 
+            // ðŸ†• Pobierz kontekst uÅ¼ytkownika na wybrany dzieÅ„
+            var contextSnapshot = await _db.UserContextChanges
+                .Where(c => c.AppUserId == LoggedUser.Id && c.EffectiveFrom <= SelectedDate)
+                .OrderByDescending(c => c.EffectiveFrom)
+                .FirstOrDefaultAsync();
+
+            if (contextSnapshot != null)
+            {
+                LoggedUser.Goal = contextSnapshot.Goal;
+                LoggedUser.ActivityLevel = contextSnapshot.ActivityLevel;
+                LoggedUser.WorkStyle = contextSnapshot.WorkStyle;
+            }
+
             WaterDrunkToday = await _db.WaterIntakes
                 .Where(w => w.AppUserId == LoggedUser.Id && w.Date.Date == SelectedDate.Date)
                 .SumAsync(w => w.AmountMl);
@@ -95,6 +108,7 @@ namespace Formify.Pages
         }
 
         private void CalculateUserNeeds(AppUser user)
+
         {
             float bmr;
 
@@ -104,7 +118,7 @@ namespace Formify.Pages
             }
             else
             {
-                // Domyœlnie: mê¿czyzna lub inna p³eæ – stosujemy wzór mêski
+                // DomyÅ›lnie: mÄ™Å¼czyzna lub inna pÅ‚eÄ‡ â€“ stosujemy wzÃ³r mÄ™ski
                 bmr = 10f * user.Weight + 6.25f * user.Height - 5f * user.Age + 5f;
             }
 
@@ -137,6 +151,7 @@ namespace Formify.Pages
             float fatKcal = DailyFatTarget * 9f;
             float carbsKcal = DailyCaloriesTarget - proteinKcal - fatKcal;
             DailyCarbsTarget = carbsKcal / 4f;
+
         }
 
         private int GetProgress(float consumed, float target)
@@ -147,25 +162,25 @@ namespace Formify.Pages
 
         public string GetGoalText(Goal goal) => goal switch
         {
-            Goal.LoseWeight => "Schudn¹æ",
-            Goal.MaintainWeight => "Utrzymaæ wagê",
-            Goal.BuildMuscle => "Zbudowaæ masê miêœniow¹",
+            Goal.LoseWeight => "SchudnÄ…Ä‡",
+            Goal.MaintainWeight => "UtrzymaÄ‡ wagÄ™",
+            Goal.BuildMuscle => "ZbudowaÄ‡ masÄ™ miÄ™Å›niowÄ…",
             _ => goal.ToString()
         };
 
         public string GetActivityText(ActivityLevel level) => level switch
         {
-            ActivityLevel.VeryLow => "Bardzo niska (np. praca siedz¹ca, brak ruchu)",
-            ActivityLevel.Low => "Niska (spacery, obowi¹zki domowe)",
-            ActivityLevel.Medium => "Œrednia (chodzenie, stanie, czêsty ruch)",
-            ActivityLevel.High => "Wysoka (du¿o ruchu)",
-            ActivityLevel.VeryHigh => "Bardzo wysoka (ciê¿ka praca fizyczna, sportowiec)",
+            ActivityLevel.VeryLow => "Bardzo niska (np. praca siedzÄ…ca, brak ruchu)",
+            ActivityLevel.Low => "Niska (spacery, obowiÄ…zki domowe)",
+            ActivityLevel.Medium => "Åšrednia (chodzenie, stanie, czÄ™sty ruch)",
+            ActivityLevel.High => "Wysoka (duÅ¼o ruchu)",
+            ActivityLevel.VeryHigh => "Bardzo wysoka (ciÄ™Å¼ka praca fizyczna, sportowiec)",
             _ => level.ToString()
         };
 
         public string GetWorkStyleText(WorkStyle style) => style switch
         {
-            WorkStyle.Sedentary => "Siedz¹cy (np. biurowy)",
+            WorkStyle.Sedentary => "SiedzÄ…cy (np. biurowy)",
             WorkStyle.Mobile => "Ruchomy (np. kelner, kurier)",
             WorkStyle.Physical => "Fizyczny (np. magazyn, budowa)",
             _ => style.ToString()

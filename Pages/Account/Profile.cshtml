@@ -1,0 +1,40 @@
+﻿@page
+@model Formify.Pages.Account.ProfileModel
+@{
+    ViewData["Title"] = "Twój profil";
+}
+
+<h2 class="mb-4">Ustawienia celu i aktywności</h2>
+
+<form method="post" class="border p-4 rounded bg-light shadow-sm" style="max-width: 500px;">
+    <div class="mb-3">
+        <label class="form-label">Cel</label>
+        <select class="form-select" asp-for="UpdatedGoal">
+            <option value="0">Schudnąć</option>
+            <option value="1">Utrzymać wagę</option>
+            <option value="2">Zbudować masę mięśniową</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Poziom aktywności fizycznej</label>
+        <select class="form-select" asp-for="UpdatedActivityLevel">
+            <option value="0">Bardzo niska – brak treningów, praca siedząca</option>
+            <option value="1">Niska – lekkie spacery, 1–2 treningi w tygodniu</option>
+            <option value="2">Średnia – 3–4 treningi, aktywny tryb życia</option>
+            <option value="3">Wysoka – 5–6 treningów, dużo ruchu</option>
+            <option value="4">Bardzo wysoka – codzienne treningi, sportowiec</option>
+        </select>
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label">Tryb pracy</label>
+        <select class="form-select" asp-for="UpdatedWorkStyle">
+            <option value="0">Siedzący – biuro, komputer, kierowca</option>
+            <option value="1">Ruchomy – kelner, kurier, nauczyciel</option>
+            <option value="2">Fizyczny – magazyn, budowa, mechanik</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Zapisz zmiany</button>
+</form>
