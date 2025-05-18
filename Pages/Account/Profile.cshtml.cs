@@ -24,6 +24,20 @@ namespace Formify.Pages.Account
         [BindProperty]
         public WorkStyle UpdatedWorkStyle { get; set; }
 
+        [BindProperty]
+        public string PhoneNumber { get; set; }
+
+        [BindProperty]
+        public string CurrentPassword { get; set; }
+
+        [BindProperty]
+        public string NewPassword { get; set; }
+
+        [BindProperty]
+        public string ConfirmPassword { get; set; }
+
+        public string PasswordChangeMessage { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
             var email = HttpContext.Session.GetString("UserEmail");
@@ -46,6 +60,7 @@ namespace Formify.Pages.Account
                 UpdatedActivityLevel = lastContext.ActivityLevel;
                 UpdatedWorkStyle = lastContext.WorkStyle;
             }
+            PhoneNumber = user.PhoneNumber;
 
             return Page();
         }
@@ -70,6 +85,27 @@ namespace Formify.Pages.Account
             };
 
             _db.UserContextChanges.Add(newContext);
+            await _db.SaveChangesAsync();
+            user.PhoneNumber = PhoneNumber;
+
+            if (!string.IsNullOrEmpty(CurrentPassword) &&
+                !string.IsNullOrEmpty(NewPassword) &&
+                !string.IsNullOrEmpty(ConfirmPassword))
+            {
+                if (!BCrypt.Net.BCrypt.Verify(CurrentPassword, user.PasswordHash))
+                {
+                    PasswordChangeMessage = "Obecne has³o jest niepoprawne.";
+                    return Page();
+                }
+
+                if (NewPassword != ConfirmPassword)
+                {
+                    PasswordChangeMessage = "Nowe has³a nie s¹ identyczne.";
+                    return Page();
+                }
+
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(NewPassword);
+            }
             await _db.SaveChangesAsync();
 
             return RedirectToPage("/Dashboard");

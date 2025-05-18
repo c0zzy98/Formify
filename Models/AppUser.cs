@@ -15,6 +15,8 @@ namespace Formify.Models
         public int Age { get; set; }
         public int Height { get; set; } // cm
         public float Weight { get; set; } // kg
+        public string PhoneNumber { get; set; }
+
 
         public Goal Goal { get; set; }
         public ActivityLevel ActivityLevel { get; set; }

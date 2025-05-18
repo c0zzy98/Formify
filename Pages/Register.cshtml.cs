@@ -54,6 +54,9 @@ namespace Formify.Pages
         [Range(10, 120, ErrorMessage = "Wiek musi byæ miêdzy 10 a 120 lat")]
         public int Age { get; set; }
 
+        [Phone]
+        public string PhoneNumber { get; set; }
+
         [BindProperty] public Goal Goal { get; set; }
         [BindProperty] public ActivityLevel ActivityLevel { get; set; }
         [BindProperty] public WorkStyle WorkStyle { get; set; }
@@ -92,6 +95,7 @@ namespace Formify.Pages
                 LastName = LastName,
                 Gender = Gender,
                 Email = Email,
+                PhoneNumber = PhoneNumber,
                 PasswordHash = hashedPassword,
                 Age = Age,
                 Height = Height,
