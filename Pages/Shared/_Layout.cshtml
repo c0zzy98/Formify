@@ -33,9 +33,15 @@
                         @if (!hideUserIcon)
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @{
+                                    var userEmail = Context.Session.GetString("UserEmail");
+                                }
+
+                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                                    <span class="d-none d-sm-inline">@("Witaj, " + userEmail)</span>
                                 </a>
+
                                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="userDropdown">
                                     <li><a class="dropdown-item" asp-page="/Account/Profile">Profil</a></li>
                                     <li><a class="dropdown-item" asp-page="/Account/OpenAi">OpenAI API</a></li>
